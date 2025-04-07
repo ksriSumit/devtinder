@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const jwtSecret = process.env.JWT_SECRET;
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -74,6 +76,13 @@ const userSchema = new mongoose.Schema(
     }, // Enable automatic created_on and updated_on fields
   }
 );
+
+userSchema.methods.getJWT = async function () {
+  const token = await jwt.sign({ _id: this._id }, jwtSecret, {
+    expiresIn: "1h",
+  });
+  return token;
+};
 
 const UserModel = mongoose.model("Users", userSchema);
 

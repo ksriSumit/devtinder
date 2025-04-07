@@ -15,7 +15,7 @@ const login = async (req, res, next) => {
     // Compare passwords correctly
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
-      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: "1h" });
+      const token = await user.getJWT();
       res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
