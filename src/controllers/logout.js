@@ -3,8 +3,8 @@ const logout = (req, res) => {
     // Clear the HTTP-only cookie
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      expires: new Date(Date.now()),
     });
 
     // Send success response
