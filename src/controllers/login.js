@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -28,7 +27,10 @@ const login = async (req, res, next) => {
         name: user.name,
       });
     } else {
-      return res.status(401).send("Invalid Credentials");
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Credentials",
+      });
     }
   } catch (error) {
     return res.status(400).send(`${error.message}`);

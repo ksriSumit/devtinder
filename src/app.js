@@ -1,5 +1,5 @@
 const express = require("express");
-const userRouter = require("./routes/user");
+const userRouter = require("./routes/profile");
 const authRoute = require("./routes/auth");
 const cookieParser = require("cookie-parser");
 const app = express();

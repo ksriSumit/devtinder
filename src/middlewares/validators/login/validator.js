@@ -5,11 +5,10 @@ module.exports = {
   loginValidator: [
     body("email")
       .trim()
-      .normalizeEmail()
       .isEmail()
       .withMessage("Not a valid email address")
       .custom(async function (val) {
-        const user = await userModel.findOne({ email: val }); // ✅ Corrected query
+        const user = await userModel.findOne({ email: val });
         if (!user) throw new Error("Invalid Credentials");
         return true;
       }),

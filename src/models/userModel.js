@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema(
         message: "Enter a valid URL",
       },
     },
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: {
@@ -78,9 +82,13 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.getJWT = async function () {
-  const token = await jwt.sign({ _id: this._id }, jwtSecret, {
-    expiresIn: "1h",
-  });
+  const token = await jwt.sign(
+    { _id: this._id, tokenVersion: this.tokenVersion },
+    jwtSecret,
+    {
+      expiresIn: "1h",
+    }
+  );
   return token;
 };
 

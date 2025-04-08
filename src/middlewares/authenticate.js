@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const UserModel = require("../models/userModel");
 require("dotenv").config();
 const jwtSecret = process.env.JWT_SECRET;
 const userAuth = async (req, res, next) => {
@@ -11,6 +12,12 @@ const userAuth = async (req, res, next) => {
       });
     }
     const decoded = jwt.verify(token, jwtSecret);
+
+    const user = await UserModel.findById(decoded._id);
+    if (!user || user.tokenVersion !== decoded.tokenVersion) {
+      return res.status(401).json({ message: "Token revoked" });
+    }
+
     req.user = decoded;
     //putting the next method here because if placed at last
     // The route handler would still execute even after failed authentication

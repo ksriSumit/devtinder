@@ -4,7 +4,6 @@ const logout = (req, res) => {
     res.clearCookie("token", {
       httpOnly: true,
       sameSite: "strict",
-      expires: new Date(Date.now()),
     });
 
     // Send success response
