@@ -2,7 +2,8 @@ const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const createUser = async (req, res, next) => {
-  const { firstName, lastName, email, password, age, gender, skill } = req.body;
+  const { firstName, lastName, email, password, age, gender, skills } =
+    req.body;
 
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
@@ -13,7 +14,7 @@ const createUser = async (req, res, next) => {
     password: passwordHash,
     age,
     gender,
-    skill,
+    skills,
   });
 
   await user

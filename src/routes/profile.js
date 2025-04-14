@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// ======================
-// 1. Middleware Imports
-// ======================
 const { userAuth } = require("../middlewares/authenticate");
 const handleValidationErrors = require("../middlewares/validators/handleValidationErrors");
 const createRequestFilter = require("../middlewares/filters/requestFilter");
@@ -12,22 +9,12 @@ const {
   changePasswordValidator,
 } = require("../middlewares/validators/updateProfile/validator");
 
-// ======================
-// 2. Controller Imports
-// ======================
 const {
   viewProfile,
   updateUser,
   changePassword,
-  // Other controllers (unused here but kept for completeness)
-  getSingleUserByEmail,
-  getAllUser,
-  deleteUser,
 } = require("../controllers/profile");
 
-// ======================
-// 3. Filter Definitions
-// ======================
 const updateProfileFilter = createRequestFilter(
   ["firstName", "lastName", "age", "gender", "skills", "about"],
   [], // No required fields
@@ -38,9 +25,6 @@ const changePasswordFilter = createRequestFilter(
   ["oldPassword", "newPassword"],
   { stripNulls: true, logRejected: true }
 );
-// ======================
-// 4. Route Definitions
-// ======================
 
 // View Profile (GET)
 router.get("/profile/view", userAuth, viewProfile);
@@ -65,7 +49,4 @@ router.patch(
   changePassword // Controller
 );
 
-// ======================
-// 5. Export Router
-// ======================
 module.exports = router;
