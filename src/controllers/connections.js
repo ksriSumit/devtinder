@@ -37,7 +37,8 @@ const connections = async (req, res) => {
         "skills",
         "about",
         "gender",
-        "photo",
+        "photoUrl",
+        "age",
       ])
       .populate("toUserId", [
         "firstName",
@@ -45,7 +46,8 @@ const connections = async (req, res) => {
         "skills",
         "about",
         "gender",
-        "photo",
+        "photoUrl",
+        "age",
       ])
       .select("-__v -createdAt -updatedAt")
       .lean();

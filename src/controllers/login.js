@@ -8,32 +8,49 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    // Await the database query
+    // Find user and explicitly exclude fields we don't want
     const user = await userModel.findOne({ email });
 
-    // Compare passwords correctly
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (isMatch) {
-      const token = await user.getJWT();
-      res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000, //1 day
-      });
-      return res.status(200).json({
-        success: true,
-        id: user._id,
-        email: user.email,
-        name: user.name,
-      });
-    } else {
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: "Invalid Credentials",
       });
     }
+
+    // Compare passwords correctly
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Credentials",
+      });
+    }
+
+    const token = await user.getJWT();
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, //1 day
+    });
+
+    // Create a clean user object without sensitive fields
+    const userWithoutSensitiveFields = user.toObject();
+    delete userWithoutSensitiveFields.password;
+    delete userWithoutSensitiveFields.__v;
+    delete userWithoutSensitiveFields.tokenVersion;
+    delete userWithoutSensitiveFields.created_on;
+    delete userWithoutSensitiveFields.updated_on;
+
+    return res.status(200).json({
+      success: true,
+      data: userWithoutSensitiveFields,
+    });
   } catch (error) {
-    return res.status(400).send(`${error.message}`);
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

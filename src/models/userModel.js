@@ -59,14 +59,15 @@ const userSchema = new mongoose.Schema(
         message: "Provide valid gender data (male, female, or others)",
       },
     },
-    photo: {
+    photoUrl: {
       type: String,
       validate: {
         validator: function (val) {
-          return validator.isURL(val);
+          return val === "" || validator.isURL(val);
         },
         message: "Enter a valid URL",
       },
+      default: "https://avatar.iran.liara.run/public/boy?username=Ash",
     },
     tokenVersion: {
       type: Number,

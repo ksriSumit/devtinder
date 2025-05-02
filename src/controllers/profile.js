@@ -68,14 +68,11 @@ const updateUser = async (req, res) => {
         _id: user._id,
       },
       req.body,
-      { returnDocument: "after" }
+      { returnDocument: "after", select: "-password -__v -refreshToken" }
     );
 
     if (updateStatus && updateStatus._id.toString() === user._id.toString()) {
-      return res.status(200).json({
-        success: true,
-        message: "Profile Updated Successfully",
-      });
+      return res.status(200).send(updateStatus);
     }
 
     res.status(400).json({

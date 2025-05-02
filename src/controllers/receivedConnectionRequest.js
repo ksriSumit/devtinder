@@ -19,7 +19,7 @@ const receivedConnectionRequest = async (req, res) => {
         "skills",
         "about",
         "gender",
-        "photo",
+        "photoUrl",
         "-_id",
       ])
       .select("-__v -createdAt -updatedAt");

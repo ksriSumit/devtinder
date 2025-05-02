@@ -17,20 +17,31 @@ const createUser = async (req, res, next) => {
     skills,
   });
 
-  await user
-    .save()
-    .then(() => {
-      console.log("Data Saved Successfully");
-      res
-        .status(201)
-        .send(
-          "User Created Successfully with FirstName: " + req.body.firstName
-        );
-    })
-    .catch((error) => {
-      console.log("Something went wrong", error);
-      res.status(500).send("Something Went Wrong");
+  try {
+    const savedUser = await user.save();
+
+    const token = await savedUser.getJWT();
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, //1 day
     });
+
+    const userWithoutSensitiveFields = user.toObject();
+    delete userWithoutSensitiveFields.password;
+    delete userWithoutSensitiveFields.__v;
+    delete userWithoutSensitiveFields.tokenVersion;
+    delete userWithoutSensitiveFields.created_on;
+    delete userWithoutSensitiveFields.updated_on;
+
+    return res.status(201).json({
+      success: true,
+      data: userWithoutSensitiveFields,
+    });
+  } catch (error) {
+    console.log("Something went wrong", error);
+    res.status(500).send("Something Went Wrong");
+  }
 };
 
 module.exports = createUser;
